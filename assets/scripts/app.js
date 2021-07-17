@@ -88,6 +88,7 @@ class ProjectItem {
         this.updateProjectListsHandler = updateProjectListsFunction
         this.connectMoreInfoButton()
         this.connectSwitchButton(type)
+        this.connectDrag()
     }
 
     showMoreInfoHandler() {
@@ -101,6 +102,14 @@ class ProjectItem {
         }, tooltipText, this.id)
         tooltip.attach()
         this.hasActiveTooltip = true
+    }
+
+    connectDrag() {
+        document.getElementById(this.id).addEventListener('dragstart', e => {
+            e.dataTransfer.setData('text/plain', this.id)
+            e.dataTransfer.effectAllowed = 'move'
+        })
+
     }
 
     connectMoreInfoButton() {
@@ -134,7 +143,46 @@ class ProjectList {
         for (const prjItem of prjItems) {
             this.projects.push(new ProjectItem(prjItem.id, this.switchProject.bind(this), this.type))
         }
+        console.log(this.projects)
+        this.connectDroppable()
     }
+
+    connectDroppable() {
+        const list = document.querySelector(`#${this.type}-projects ul`)
+        list.addEventListener('dragenter', event => {
+            if (event.dataTransfer.types[0] === 'text/plain') {
+                event.preventDefault()
+                list.parentElement.classList.add('droppable')
+            }
+        })
+        list.addEventListener('dragover', e => {
+            if (e.dataTransfer.types[0] === 'text/plain') {
+                e.preventDefault()
+
+            }
+        })
+
+        list.addEventListener('dragleave', e => {
+            if (e.relatedTarget.closest(`#${this.type}-projects ul`) !== list) {
+
+                list.parentElement.classList.remove('droppable')
+            }
+        })
+
+        list.addEventListener('drop', e => {
+            const prjId = e.dataTransfer.getData('text/plain')
+            if (this.projects.find(p => p.id === prjId)) {
+                return
+            }
+
+            document.getElementById(prjId).querySelector('button:last-of-type').click()
+            list.parentElement.classList.remove('droppable')
+            //e.preventDefault()
+        })
+
+
+    }
+
 
     setSwitchHandlerFunction(switchHandlerFunction) {
         this.swithcHandler = switchHandlerFunction
@@ -167,11 +215,11 @@ class App {
             activeProjectsList.addProject.bind(activeProjectsList)
         )
 
-        const timerId = setTimeout(this.startAnalytics, 3000)
+        /* const timerId = setTimeout(this.startAnalytics, 3000)
 
         document.getElementById('stop-analytics-btn').addEventListener('click', () => {
             clearTimeout(timerId)
-        })
+        }) */
     }
 
     static startAnalytics() {
