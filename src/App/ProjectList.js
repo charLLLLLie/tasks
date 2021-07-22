@@ -1,16 +1,17 @@
 import {
     ProjectItem
-} from "./ProjectItem.js"
+} from "./ProjectItem"
 
 import {
     DomHelper
-} from "../Utility/DOMHelper.js"
+} from "../Utility/DOMHelper"
 
 export class ProjectList {
-    projects = []
+    //projects = []
 
     constructor(type) {
         this.type = type
+        this.projects = []
         const prjItems = document.querySelectorAll(`#${type}-projects li`)
         for (const prjItem of prjItems) {
             this.projects.push(new ProjectItem(prjItem.id, this.switchProject.bind(this), this.type))

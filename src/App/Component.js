@@ -16,7 +16,8 @@ export class Component {
     }
 
     attach() {
-        this.hostElement.insertAdjacentElement(this.insertBefore ? 'afterbegin' : 'beforeend',
+        this.hostElement.insertAdjacentElement(
+            this.insertBefore ? 'afterbegin' : 'beforeend',
             this.element)
     }
 }

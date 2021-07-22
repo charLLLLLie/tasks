@@ -1,6 +1,6 @@
 import {
     ProjectList
-} from '../scripts/App/ProjectList.js'
+} from './App/ProjectList'
 class App {
     static init() {
         const activeProjectsList = new ProjectList('active')
